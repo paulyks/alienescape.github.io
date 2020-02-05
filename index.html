@@ -1,4 +1,4 @@
-
+<?php header('Access-Control-Allow-Origin: *'); ?>
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
@@ -57,3 +57,33 @@
 </div>
 </body>
 </html>
+
+<?php
+if(isset($_GET['date']) && isset($_GET['time']) && isset($_GET['longitude']) && isset($_GET['latitude'])) 
+{
+$date = $_GET['date'];
+$time = $_GET['time'];
+$long = $_GET['longitude'];
+$lat = $_GET['latitude'];
+$url = 'https://api.sendgrid.com/v3/mail/send';
+$data = '{"personalizations":[{"to":[{"email":"paulyksbzone@gmail.com"}],"subject":"UrgentRoxanica: Coletul dumneavoastra"}],"from":{"email":"no-reply@urgentroxanica.ro"},"content":[{"type":"text/plain","value":"UrgentRoxanica va ureaza o zi productiva!\n\nDatele dumneavoastra au fost colectate si vom incerca sa va livram coletul in ziua de ' . $date . ', la ora ' . $time . ' in locatia specificata(' . $long . ',' . $lat . '). \n\nMultumim ca folositi UrgentRoxanica, numai bine!"}]}';
+$secureData = '{"personalizations":[{"to":[{"email":"paulyksbzone@gmail.com"}],"subject":"UrgentRoxanica: Coletul dumneavoastra"}],"from":{"email":"no-reply@urgentroxanica.ro"},"content":[{"type":"text/plain","value":"UrgentRoxanica va ureaza o zi productiva!\n\nDatele dumneavoastra au fost colectate si vom incerca sa va livram coletul in ziua de ' . $date . ', la ora ' . $time . ' in locatia specificata(' . $long . ',' . $lat . '). \n\nMultumim ca folositi UrgentRoxanica, numai bine!"}]}';
+
+$ch = curl_init($url);
+
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-type: application/json',
+    'Authorization: Bearer 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'
+));
+
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$response = curl_exec($ch);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $secureData);
+$response = curl_exec($ch);
+curl_close($ch);
+echo $response;
+}
+?>
